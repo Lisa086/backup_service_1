@@ -1,0 +1,122 @@
+.monitor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.monitor-card {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.monitor-card h3 {
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.status-dot.healthy {
+  background: #28a745;
+}
+
+.status-dot.unhealthy {
+  background: #dc3545;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.uptime {
+  margin-top: 10px;
+  color: #666;
+  font-size: 14px;
+}
+
+.metric-value {
+  font-size: 36px;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.logs-section {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.logs-section h3 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.no-logs {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}
+
+.logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.log-item {
+  display: flex;
+  gap: 15px;
+  padding: 10px;
+  border-left: 3px solid #ddd;
+  background: #f9f9f9;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.log-timestamp {
+  color: #666;
+  min-width: 150px;
+}
+
+.log-level {
+  min-width: 60px;
+  font-weight: bold;
+}
+
+.log-level.INFO {
+  color: #17a2b8;
+}
+
+.log-level.ERROR {
+  color: #dc3545;
+}
+
+.log-level.WARNING {
+  color: #ffc107;
+}
+
+.log-message {
+  color: #333;
+  flex: 1;
+}
+

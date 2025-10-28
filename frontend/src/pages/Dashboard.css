@@ -1,0 +1,36 @@
+.container h1 {
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.provider-selector {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.provider-selector label {
+  font-weight: 500;
+  color: #555;
+}
+
+.provider-selector select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 18px;
+}
+

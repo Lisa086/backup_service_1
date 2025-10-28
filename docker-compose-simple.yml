@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+
+  auth_service:
+    build: ./backend/auth_service
+    ports:
+      - "8001:8001"
+    environment:
+      SECRET_KEY: "your-secret-key-12345"
+      MONGODB_URL: "mongodb://admin:admin@mongodb:27017/backup_db?authSource=admin"
+      REDIS_URL: "redis://redis:6379"
+    depends_on:
+      - mongodb
+      - redis
+
+volumes:
+  mongodb_data:

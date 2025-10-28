@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+
+# Logs
+*.log
+logs/
+
+# Docker
+docker-compose.override.yml
+
+# Uploads
+uploads/
+temp/
+
+# Credentials
+*.json
+!example.json
+.aws/
+.azure/
+*.pem
+*.key
+*.crt
+
+# Data volumes
+mongodb_data/
+redis_data/
+prometheus_data/
+grafana_data/

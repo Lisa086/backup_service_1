@@ -1,0 +1,143 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: backup_mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: backup_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  backup_service:
+    build:
+      context: ./backend
+      dockerfile: backup_service/Dockerfile
+    container_name: backup_service
+    ports:
+      - "8002:8002"
+    volumes:
+      - local_storage:/app/local_storage
+      - ./backend/shared:/app/shared
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=your-super-secret-key-change-in-production-please
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+      - AWS_REGION=${AWS_REGION}
+      - AZURE_CONNECTION_STRING=${AZURE_CONNECTION_STRING}
+      - AZURE_CONTAINER_NAME=${AZURE_CONTAINER_NAME}
+      - GOOGLE_BUCKET_NAME=${GOOGLE_BUCKET_NAME}
+      - GOOGLE_CREDENTIALS_PATH=${GOOGLE_CREDENTIALS_PATH}
+
+  auth_service:
+    build:
+      context: ./backend
+      dockerfile: auth_service/Dockerfile
+    container_name: auth_service
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./backend/shared:/app/shared
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017
+      - SECRET_KEY=your-super-secret-key-change-in-production-please
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_PORT=${SMTP_PORT}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+
+  config_service:
+    build:
+      context: ./backend
+      dockerfile: config_service/Dockerfile
+    container_name: config_service
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./backend/shared:/app/shared
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017
+
+  alert_service:
+    build:
+      context: ./backend
+      dockerfile: alert_service/Dockerfile
+    container_name: alert_service
+    ports:
+      - "8004:8004"
+    volumes:
+      - ./backend/shared:/app/shared
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  monitor_service:
+    build:
+      context: ./backend
+      dockerfile: monitor_service/Dockerfile
+    container_name: monitor_service
+    ports:
+      - "8005:8005"
+    volumes:
+      - ./backend/shared:/app/shared
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017
+      - REDIS_URL=redis://redis:6379
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command: 
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+volumes:
+  mongodb_data:
+  redis_data:
+  local_storage:
+  grafana_data:
+  prometheus_data:
+
